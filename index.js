@@ -16,8 +16,8 @@ app.get('/tp1', (req, res) => {
         .pipe(csv())
         .on('data', (data) => results.push(data))
         .on('end', () => {
-            const transferSiege = results.filter(result => result.transferSiege == 'true')
-            const percentage = transferSiege.length / results.length * 100
+            const transfertSiege = results.filter(result => result.transfertSiege == 'true')
+            const percentage = transfertSiege.length / results.length * 100
             let i = percentage.toFixed(1)
             res.send(`${i}% c'est le nombre étonnant d'entreprise qui ont transféré leurs siège social en 2019`)
         });
