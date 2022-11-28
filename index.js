@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
     res.send('hello racaille');
 })
 
-app.get('/tp1', (req, res) => {
+app.get('/tp2', (req, res) => {
     const results = [];
     fs.createReadStream('data.csv')
         .pipe(csv())
