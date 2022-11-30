@@ -5,7 +5,6 @@ const csv = require('csv-parser')
 const downloadjs = require("download");
 const unzip = require('unzip-stream')
 
-
 let app = express();
 
 var i = 0;
@@ -15,35 +14,35 @@ app.get('/', (res) => {
     res.send('hello racaille');
 })
 
-app.get('/tp2', (res) => {
+app.get('/tp2', (rep : any, res : any)=>{
     var i : number = 0;
     var countTrue : number = 0
     downloadjs('https://files.data.gouv.fr/insee-sirene/StockEtablissementLiensSuccession_utf8.zip', 'data').then(() => {
         fs.createReadStream('data/StockEtablissementLiensSuccession_utf8.zip')
         .pipe(unzip.Parse())
-        .on('entry', function (entry : any){
+        .on('entry', function (entry : any) {
             const fileName = entry.path;
-            if (fileName === 'data.csv') {
+            if (fileName === "StockEtablissementLiensSuccession_utf8.csv") {
                 entry.pipe(csv())
-                    .on('data', (data : any) => {
-                        i = i + 1;
-                        if (data.transferSiege.total == 'true'){
-                            countTrue++;
-                        }
-                        console.log(data);
-                    })
-                    .on('end', () => {
-             const transferCount : number = countTrue/i*100;
-             const total : any = transferCount.toFixed(2)
-                res.send(`Ouais salut ${total}`);©
-            });
-            } else {
-                entry.autodrain();
-            }
-        });
+    .on('data', (data : any) => {
+        i = i + 1;
+        if (data.transfertSiege == "true") {
+            countTrue = countTrue + 1;
+        }
+    })
+    .on('end', ()=>{
+        const transferCount : number = countTrue/i*100;
+        const total : string = transferCount.toFixed(2)
+        res.send(`Le pourcentage est de ${total}%`)
+    })
+    } else {
+        entry.autodrain();
+    }
+    });
 })
 })
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 })
+
