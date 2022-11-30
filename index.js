@@ -7,13 +7,12 @@ var unzip = require('unzip-stream');
 var app = express();
 var i = 0;
 var countTrue = 0;
+
 app.get('/', function (res) {
     res.send('hello racaille');
 });
-app.get('/', function (req, res) {
-    res.send('hello send');
-});
-app.get('/tp2', function (res) {
+
+app.get('/tp2', function (rep, res) {
     var i = 0;
     var countTrue = 0;
     downloadjs('https://files.data.gouv.fr/insee-sirene/StockEtablissementLiensSuccession_utf8.zip', 'data').then(function () {
@@ -21,19 +20,18 @@ app.get('/tp2', function (res) {
             .pipe(unzip.Parse())
             .on('entry', function (entry) {
             var fileName = entry.path;
-            if (fileName === 'data.csv') {
+            if (fileName === "StockEtablissementLiensSuccession_utf8.csv") {
                 entry.pipe(csv())
                     .on('data', function (data) {
                     i = i + 1;
-                    if (data.transferSiege.total == 'true') {
-                        countTrue++;
+                    if (data.transfertSiege == "true") {
+                        countTrue = countTrue + 1;
                     }
-                    console.log(data);
                 })
                     .on('end', function () {
                     var transferCount = countTrue / i * 100;
                     var total = transferCount.toFixed(2);
-                    res.send("Ouais salut ".concat(total));
+                    res.send("Le pourcentage est de ".concat(total, "%"));
                 });
             }
             else {
